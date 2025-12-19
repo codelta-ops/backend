@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.give_hand.mapper.TaskMapper">
+    <select id="list" resultType="com.give_hand.entity.Task">
+        SELECT
+        t.*,
+        img.image_url
+        FROM
+        task t
+        LEFT JOIN (
+        SELECT
+        task_id,
+        MIN(id) AS first_image_id
+        FROM
+        task_image
+        GROUP BY
+        task_id
+        ) ti ON t.id = ti.task_id
+        LEFT JOIN
+        task_image img ON ti.first_image_id = img.id
+        ORDER BY
+        t.create_time DESC
+    </select>
+
+    <select id="search" resultType="com.give_hand.entity.Task">
+        SELECT
+        t.*,
+        img.image_url
+        FROM
+        task t
+        LEFT JOIN (
+        SELECT
+        task_id,
+        MIN(id) AS first_image_id
+        FROM
+        task_image
+        GROUP BY
+        task_id
+        ) ti ON t.id = ti.task_id
+        LEFT JOIN
+        task_image img ON ti.first_image_id = img.id
+        <where>
+            <if test="keyword != null">
+                AND t.title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY
+        t.create_time DESC
+    </select>
+
+</mapper>

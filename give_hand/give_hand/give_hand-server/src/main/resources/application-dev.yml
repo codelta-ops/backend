@@ -1,0 +1,12 @@
+sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: give_hand
+    username: root
+    password: 520991314
+
+  aliyun:
+    access-key-id: LTAI5tLCFtRCZB1XESfMUdMT
+    access-key-secret: 7tAZpWhML7hGuFcI7dBuLduptWm3UG

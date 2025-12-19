@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for give_hand" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="pojo" target="17" />
+      <module name="server" target="17" />
+      <module name="server2" target="17" />
+      <module name="server2 (1)" target="17" />
+      <module name="server3" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="give_hand" options="-parameters" />
+      <module name="my_common" options="-parameters" />
+      <module name="my_pojo" options="-parameters" />
+      <module name="my_server" options="-parameters" />
+      <module name="pojo" options="-parameters" />
+      <module name="server" options="-parameters" />
+      <module name="server2" options="-parameters" />
+      <module name="server2 (1)" options="-parameters" />
+    </option>
+  </component>
+</project>
