@@ -1,6 +1,8 @@
-**/target/
+.git
 .idea
 *.iml
-*.class
-*Test.java
-**/test/
+**/target
+**/.classpath
+**/.project
+**/.settings
+.DS_Store
