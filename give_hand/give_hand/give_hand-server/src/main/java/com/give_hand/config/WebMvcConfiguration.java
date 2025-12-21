@@ -27,19 +27,33 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     /**
      * 注册自定义拦截器
-     *
-     * @param registry
      */
+    @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
+
         registry.addInterceptor(jwtTokenAdminInterceptor)
+                // 只拦截 /api 下的业务接口
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/login", "/api/auth/register");
+                // 放行：登录/注册/健康检查 + swagger 静态资源/接口描述
+                .excludePathPatterns(
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/healthz",
+
+                        // Spring 默认错误页（避免某些情况下被拦导致 401/500 混淆）
+                        "/error",
+
+                        // Swagger / Knife4j（你用的是 swagger2 + doc.html）
+                        "/doc.html",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v2/api-docs"
+                );
     }
 
     /**
      * 通过knife4j生成接口文档
-     * @return
      */
     @Bean
     public Docket docket() {
@@ -48,21 +62,25 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .version("2.0")
                 .description("苍穹外卖项目接口文档")
                 .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.give_hand.controller"))
                 .paths(PathSelectors.any())
                 .build();
-        return docket;
     }
 
     /**
      * 设置静态资源映射
-     * @param registry
      */
+    @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        // Knife4j / Swagger UI 资源映射
+        registry.addResourceHandler("/doc.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }
