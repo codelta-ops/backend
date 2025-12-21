@@ -22,32 +22,43 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
+    /**
+     * 注册拦截器
+     */
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
 
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/api/**")
-                // 放行认证接口
-                .excludePathPatterns("/api/auth/login", "/api/auth/register", "/api/healthz");
-                // 放行健康检查
-                .excludePathPatterns("/api/healthz", "/api/health", "/api/ping")
-                // 放行 swagger/knife4j（如果你用得到）
+                // 放行认证接口 & 健康检查
+                .excludePathPatterns(
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/healthz",
+                        "/api/health",
+                        "/api/ping"
+                )
+                // 放行 swagger / knife4j
                 .excludePathPatterns(
                         "/doc.html",
                         "/swagger-resources/**",
                         "/v2/api-docs",
                         "/v3/api-docs",
+                        "/swagger-ui.html",
                         "/webjars/**"
                 );
     }
 
+    /**
+     * Swagger Docket
+     */
     @Bean
     public Docket docket() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("give_hand 接口文档")
-                .version("1.0")
                 .description("give_hand 接口文档")
+                .version("1.0")
                 .build();
 
         return new Docket(DocumentationType.SWAGGER_2)
@@ -58,15 +69,20 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .build();
     }
 
+    /**
+     * 静态资源映射（Swagger / Knife4j 必须）
+     */
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+
         // knife4j
         registry.addResourceHandler("/doc.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
+
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
-        // 兼容 swagger-ui（有些依赖会用到）
+        // swagger-ui
         registry.addResourceHandler("/swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
     }
