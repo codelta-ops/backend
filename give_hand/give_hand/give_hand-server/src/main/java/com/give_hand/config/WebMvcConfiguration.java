@@ -29,7 +29,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/api/**")
                 // 放行认证接口
-                .excludePathPatterns("/api/auth/login", "/api/auth/register")
+                .excludePathPatterns("/api/auth/login", "/api/auth/register", "/api/healthz");
                 // 放行健康检查
                 .excludePathPatterns("/api/healthz", "/api/health", "/api/ping")
                 // 放行 swagger/knife4j（如果你用得到）
