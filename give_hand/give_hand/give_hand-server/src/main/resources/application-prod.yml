@@ -1,0 +1,12 @@
+sky:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: ${SKY_DB_HOST}
+    port: ${SKY_DB_PORT}
+    database: ${SKY_DB_NAME}
+    username: ${SKY_DB_USER}
+    password: ${SKY_DB_PASS}
+
+  aliyun:
+    access-key-id: ${ALIYUN_ACCESS_KEY_ID}
+    access-key-secret: ${ALIYUN_ACCESS_KEY_SECRET}
