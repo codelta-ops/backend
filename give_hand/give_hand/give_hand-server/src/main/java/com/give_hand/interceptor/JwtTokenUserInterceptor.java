@@ -1,59 +1,55 @@
 package com.give_hand.interceptor;
 
-import com.give_hand.constant.JwtClaimsConstant;
-import com.give_hand.context.BaseContext;
-import com.give_hand.properties.JwtProperties;
 import com.give_hand.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * jwt令牌校验的拦截器
- */
 @Component
 @Slf4j
 public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private JwtProperties jwtProperties;
-
-    /**
-     * 校验jwt
-     *
-     * @param request
-     * @param response
-     * @param handler
-     * @return
-     * @throws Exception
-     */
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //判断当前拦截到的是Controller的方法还是其他资源
-        if (!(handler instanceof HandlerMethod)) {
-            //当前拦截到的不是动态方法，直接放行
+
+        // 预检请求直接放行（CORS 常见）
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             return true;
         }
 
-        //1、从请求头中获取令牌
-        String token = request.getHeader(jwtProperties.getUserTokenName());
+        String token = request.getHeader("token");
+        if (!StringUtils.hasText(token)) {
+            // 有些前端用 Authorization: Bearer xxx
+            String auth = request.getHeader("Authorization");
+            if (StringUtils.hasText(auth) && auth.startsWith("Bearer ")) {
+                token = auth.substring(7);
+            }
+        }
 
-        //2、校验令牌
-        try {
-            log.info("jwt校验:{}", token);
-            Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
-            Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
-            log.info("当前用户id：{}", userId);
-            BaseContext.setCurrentId(userId);
-            //3、通过，放行
-            return true;
-        } catch (Exception ex) {
-            log.error("JWT验证失败，token={}", token, ex);
+        log.info("jwt校验:{}", token);
+
+        if (!StringUtils.hasText(token)) {
             response.setStatus(401);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\":401,\"msg\":\"Missing token\"}");
+            return false;
+        }
+
+        try {
+            Claims claims = JwtUtil.parseJWT(token);
+            // 你如果需要把用户信息放到 request 里，可以在这里做
+            // request.setAttribute("userId", claims.get("userId"));
+            return true;
+        } catch (Exception e) {
+            log.error("JWT验证失败，token={}", token, e);
+            response.setStatus(401);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\":401,\"msg\":\"Invalid token\"}");
             return false;
         }
     }

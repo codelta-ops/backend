@@ -15,52 +15,39 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-/**
- * 配置类，注册web层相关组件
- */
 @Configuration
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
-    private JwtTokenUserInterceptor jwtTokenAdminInterceptor;
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
-    /**
-     * 注册自定义拦截器
-     */
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
 
-        registry.addInterceptor(jwtTokenAdminInterceptor)
-                // 只拦截 /api 下的业务接口
+        registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/api/**")
-                // 放行：登录/注册/健康检查 + swagger 静态资源/接口描述
+                // 放行认证接口
+                .excludePathPatterns("/api/auth/login", "/api/auth/register")
+                // 放行健康检查
+                .excludePathPatterns("/api/healthz", "/api/health", "/api/ping")
+                // 放行 swagger/knife4j（如果你用得到）
                 .excludePathPatterns(
-                        "/api/auth/login",
-                        "/api/auth/register",
-                        "/api/healthz",
-
-                        // Spring 默认错误页（避免某些情况下被拦导致 401/500 混淆）
-                        "/error",
-
-                        // Swagger / Knife4j（你用的是 swagger2 + doc.html）
                         "/doc.html",
-                        "/webjars/**",
                         "/swagger-resources/**",
-                        "/v2/api-docs"
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/webjars/**"
                 );
     }
 
-    /**
-     * 通过knife4j生成接口文档
-     */
     @Bean
     public Docket docket() {
         ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("苍穹外卖项目接口文档")
-                .version("2.0")
-                .description("苍穹外卖项目接口文档")
+                .title("give_hand 接口文档")
+                .version("1.0")
+                .description("give_hand 接口文档")
                 .build();
 
         return new Docket(DocumentationType.SWAGGER_2)
@@ -71,16 +58,16 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .build();
     }
 
-    /**
-     * 设置静态资源映射
-     */
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Knife4j / Swagger UI 资源映射
+        // knife4j
         registry.addResourceHandler("/doc.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
-
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        // 兼容 swagger-ui（有些依赖会用到）
+        registry.addResourceHandler("/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
     }
 }
