@@ -1,8 +1,10 @@
 package com.give_hand.interceptor;
 
+import com.give_hand.properties.JwtProperties; // 你项目里如果叫别的名字，用你自己的
 import com.give_hand.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,42 +16,30 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    private JwtProperties jwtProperties; // 确保你的 properties 类里有 userSecretKey + userTokenName
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        // 预检请求直接放行（CORS 常见）
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            return true;
-        }
+        String tokenName = jwtProperties.getUserTokenName(); // 一般是 token
+        String token = request.getHeader(tokenName);
 
-        String token = request.getHeader("token");
+        // 1) 没带 token：直接 401，不要抛异常
         if (!StringUtils.hasText(token)) {
-            // 有些前端用 Authorization: Bearer xxx
-            String auth = request.getHeader("Authorization");
-            if (StringUtils.hasText(auth) && auth.startsWith("Bearer ")) {
-                token = auth.substring(7);
-            }
-        }
-
-        log.info("jwt校验:{}", token);
-
-        if (!StringUtils.hasText(token)) {
+            log.warn("JWT校验失败：token为空");
             response.setStatus(401);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"code\":401,\"msg\":\"Missing token\"}");
             return false;
         }
 
         try {
-            Claims claims = JwtUtil.parseJWT(token);
-            // 你如果需要把用户信息放到 request 里，可以在这里做
-            // request.setAttribute("userId", claims.get("userId"));
+            // 2) 关键：parseJWT(token, secretKey)
+            Claims claims = JwtUtil.parseJWT(token, jwtProperties.getUserSecretKey());
+            // 你如果有 ThreadLocal 放用户信息，可在这里处理 claims
             return true;
         } catch (Exception e) {
             log.error("JWT验证失败，token={}", token, e);
             response.setStatus(401);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"code\":401,\"msg\":\"Invalid token\"}");
             return false;
         }
     }
