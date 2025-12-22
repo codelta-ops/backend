@@ -38,7 +38,7 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
 
         try {
             // 2) 关键：parseJWT(token, secretKey)
-            Claims claims = JwtUtil.parseJWT(token, jwtProperties.getUserSecretKey());
+            Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
             // 你如果有 ThreadLocal 放用户信息，可在这里处理 claims
             return true;
         } catch (Exception e) {
