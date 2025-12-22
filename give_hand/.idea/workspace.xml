@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ba41819-321b-4a7e-ae72-ccd01c06f5c9" name="更改" comment="" />
+    <list default="true" id="604de7c0-73e2-405a-a704-c2970aac15c2" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,59 +13,47 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 0
+  &quot;associatedIndex&quot;: 1
 }</component>
-  <component name="ProjectId" id="3618WdVGKbuv7tis5QjFh2r9u7Q" />
+  <component name="ProjectId" id="3640YBuEFv1OYLF57deZlDKVoEi" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Maven.give_hand [clean].executor": "Run",
+    "Maven.give_hand [install].executor": "Run",
+    "Maven.give_hand [package].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/IdeaProjects/give_hand/pojo",
-    "onboarding.tips.debug.path": "D:/IdeaProjects/give_hand/my_server/src/main/java/com/give_hand/Main.java",
+    "last_opened_file_path": "D:/IdeaProjects/give_hand/give_hand",
     "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "advanced.settings",
-    "应用程序.GiveHandApplication.executor": "Run"
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "应用程序.SkyApplication.executor": "Run"
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\IdeaProjects\give_hand\pojo" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\IdeaProjects\give_hand\my_server\src\main\java\com\give_hand" />
-      <recent name="D:\IdeaProjects\give_hand\server" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.give_hand.properties" />
-      <recent name="com.give_hand.constant" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.give_hand.dto" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="GiveHandApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.give_hand.give_hand.GiveHandApplication" />
-      <module name="give_hand" />
+    <configuration name="SkyApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.give_hand.SkyApplication" />
+      <module name="give_hand-server" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.give_hand.give_hand.*" />
+          <option name="PATTERN" value="com.give_hand.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -73,41 +61,31 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="sky-common" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="sky-common" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="应用程序.GiveHandApplication" />
+        <item itemvalue="应用程序.SkyApplication" />
       </list>
     </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
-      <changelist id="7ba41819-321b-4a7e-ae72-ccd01c06f5c9" name="更改" comment="" />
-      <created>1764162749819</created>
+      <changelist id="604de7c0-73e2-405a-a704-c2970aac15c2" name="更改" comment="" />
+      <created>1764250581565</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1764162749819</updated>
+      <updated>1764250581565</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/give_hand/Main.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server2/src/main/java/com/give_hand/Main.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server3/src/main/java/com/give_hand/Main.java</url>
-          <line>13</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

@@ -1,1 +1,0 @@
-import{i as e}from"./http-CWkExEYz.js";function a(){return e.get("/messages/list")}function n(s){return e.get(`/messages/chat/${s}`)}function i(s){return e.post("/messages/send",s)}export{n as a,a as g,i as s};

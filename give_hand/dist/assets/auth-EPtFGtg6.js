@@ -1,1 +1,0 @@
-import{i as o}from"./http-CWkExEYz.js";function i(t){return o.post("/auth/login",t)}function n(t){return o.post("/auth/register",t)}function u(){return o.post("/auth/logout")}export{u as a,i as l,n as r};
