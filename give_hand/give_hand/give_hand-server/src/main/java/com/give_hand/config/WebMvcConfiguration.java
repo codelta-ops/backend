@@ -94,13 +94,13 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     protected void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "https://my-friends-5.pages.dev",
-                        "https://b2efe662.my-friends-5.pages.dev",
-                        "http://localhost:5173"
-                )
-                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
-                .allowedHeaders("*")
+                // 允许所有来源（与 allowCredentials 一起使用时需用 allowedOriginPatterns）
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                // 允许携带 token 等自定义请求头
+                .allowedHeaders("Authorization", "token", "Content-Type", "X-Requested-With")
+                // 让前端可读取返回头里的 token
+                .exposedHeaders("Authorization", "token")
                 .allowCredentials(true);
     }
 }
