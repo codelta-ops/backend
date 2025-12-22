@@ -29,44 +29,34 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageListVO> list() {
-        Long currentId = BaseContext.getCurrentId();
-        List<Message> messages = messageMapper.list(currentId);
-        Map<Long, MessageListVO> map = new HashMap<>();
-        Map<Long, User> userCache = new HashMap<>();
-
-        for (Message message : messages) {
-            Long otherUserId = Objects.equals(message.getUid(), currentId)
-                    ? message.getAnotherId()
-                    : message.getUid();
-            User user = userCache.computeIfAbsent(otherUserId, userMapper::getById);
-            boolean isUnreadFromOther = Objects.equals(message.getAnotherId(), currentId)
-                    && Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD);
-
-            MessageListVO messageListVO = map.get(otherUserId);
-            if (messageListVO == null) {
+        List<Message> messages = messageMapper.list(BaseContext.getCurrentId());
+        MessageListVO messageListVO = null;
+        Map<Long,MessageListVO> map = new HashMap<>();
+        Integer count = null;
+        for(Message message: messages){
+            User user = userMapper.getById(message.getUid());
+            if(Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD)){
+                count = 1;
+            }else{
+                count = 0;
+            }
+            if (!map.containsKey(message.getUid())) {
                 messageListVO = MessageListVO.builder()
                         .avatar(user.getAvatar())
                         .username(user.getUsername())
                         .time(message.getTime())
-                        .count(isUnreadFromOther ? 1 : 0)
+                        .count(count)
                         .latestMsg(message.getContent())
-                        .uid(String.valueOf(otherUserId))
+                        .uId(String.valueOf(message.getUid()))
                         .build();
-                map.put(otherUserId, messageListVO);
+                map.put(message.getUid(), messageListVO);
             } else {
-                if (isUnreadFromOther) {
-                    messageListVO.setCount(messageListVO.getCount() + 1);
-                }
-                if (messageListVO.getTime() == null || message.getTime().isAfter(messageListVO.getTime())) {
-                    messageListVO.setTime(message.getTime());
-                    messageListVO.setLatestMsg(message.getContent());
-                }
+                messageListVO = map.get(message.getUid());
+                messageListVO.setCount(messageListVO.getCount() + count);
+                map.put(message.getUid(), messageListVO);
             }
         }
-
-        return map.values().stream()
-                .sorted(Comparator.comparing(MessageListVO::getTime, Comparator.nullsLast(Comparator.reverseOrder())))
-                .toList();
+        return map.values().stream().toList();
     }
 
     @Override
