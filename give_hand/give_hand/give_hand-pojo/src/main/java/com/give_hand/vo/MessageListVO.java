@@ -17,5 +17,5 @@ public class MessageListVO {
     private LocalDateTime time;
     private Integer count;
     private String latestMsg;
-    private String uId;
+    private String uid;
 }

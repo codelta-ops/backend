@@ -1,31 +1,18 @@
-#server:
-#  port: 8080
-#
-#spring:
-#  profiles:
-#    active: dev
 server:
   port: ${PORT:8080}
   address: 0.0.0.0
 
 spring:
   profiles:
+    # 本地默认 dev；Render 上用环境变量强制 prod
     active: ${SPRING_PROFILES_ACTIVE:dev}
   main:
     allow-circular-references: true
-  datasource:
-    druid:
-      driver-class-name: ${sky.datasource.driver-class-name}
-      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: ${sky.datasource.username}
-      password: ${sky.datasource.password}
 
 mybatis:
-  #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.give_hand.entity
   configuration:
-    #开启驼峰命名
     map-underscore-to-camel-case: true
 
 logging:
@@ -38,17 +25,13 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    user-secret-key: itcast
-    # 设置jwt过期时间
-    user-ttl: 7200000
-    # 设置前端传递过来的令牌名称
-    user-token-name: token
+    user-secret-key: ${JWT_USER_SECRET_KEY:itcast}
+    user-ttl: ${JWT_USER_TTL:7200000}
+    user-token-name: ${JWT_USER_TOKEN_NAME:token}
 
 aliyun:
   oss:
-    endpoint: oss-cn-beijing.aliyuncs.com
-    bucketName: give-hand
-#    region: cn-beijing
-    accessKeyId: ${sky.aliyun.access-key-id}
-    accessKeySecret: ${sky.aliyun.access-key-secret}
+    endpoint: ${ALIYUN_OSS_ENDPOINT:oss-cn-beijing.aliyuncs.com}
+    bucket-name: ${ALIYUN_OSS_BUCKET:give-hand}
+    access-key-id: ${ALIYUN_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_ACCESS_KEY_SECRET:}

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -15,54 +16,90 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-/**
- * 配置类，注册web层相关组件
- */
 @Configuration
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
-    private JwtTokenUserInterceptor jwtTokenAdminInterceptor;
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
     /**
-     * 注册自定义拦截器
-     *
-     * @param registry
+     * 注册拦截器
      */
+    @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
-        registry.addInterceptor(jwtTokenAdminInterceptor)
+
+        registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/login", "/api/auth/register");
+                // 放行认证接口 & 健康检查
+                .excludePathPatterns(
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/healthz",
+                        "/api/health",
+                        "/api/ping"
+                )
+                // 放行 swagger / knife4j
+                .excludePathPatterns(
+                        "/doc.html",
+                        "/swagger-resources/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/swagger-ui.html",
+                        "/webjars/**"
+                );
     }
 
     /**
-     * 通过knife4j生成接口文档
-     * @return
+     * Swagger Docket
      */
     @Bean
     public Docket docket() {
         ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("苍穹外卖项目接口文档")
-                .version("2.0")
-                .description("苍穹外卖项目接口文档")
+                .title("give_hand 接口文档")
+                .description("give_hand 接口文档")
+                .version("1.0")
                 .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.give_hand.controller"))
                 .paths(PathSelectors.any())
                 .build();
-        return docket;
     }
 
     /**
-     * 设置静态资源映射
-     * @param registry
+     * 静态资源映射（Swagger / Knife4j 必须）
      */
+    @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        // knife4j
+        registry.addResourceHandler("/doc.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        // swagger-ui
+        registry.addResourceHandler("/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+    }
+
+    /**
+     * CORS 配置
+     */
+    @Override
+    protected void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("https://*.pages.dev")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                // 允许携带 token 等自定义请求头
+                .allowedHeaders("Authorization", "token", "Content-Type", "X-Requested-With")
+                // 让前端可读取返回头里的 token
+                .exposedHeaders("Authorization", "token")
+                .allowCredentials(true);
     }
 }
