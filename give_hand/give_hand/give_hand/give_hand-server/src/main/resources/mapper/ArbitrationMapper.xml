@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.give_hand.mapper.ArbitrationMapper">
+    <insert id="insertArbitrationEvidence" parameterType="map">
+        <if test="evidence != null and evidence.size() > 0">
+            INSERT INTO arbitration_evidence (arbitration_id, evidence_url)
+            VALUES
+            <foreach collection="evidence" item="e" separator=",">
+                (#{arbitrationId}, #{e})
+            </foreach>
+        </if>
+    </insert>
+</mapper>
