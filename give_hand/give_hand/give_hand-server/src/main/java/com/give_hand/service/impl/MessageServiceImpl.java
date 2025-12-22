@@ -50,7 +50,7 @@ public class MessageServiceImpl implements MessageService {
                         .time(message.getTime())
                         .count(isUnreadFromOther ? 1 : 0)
                         .latestMsg(message.getContent())
-                        .uId(String.valueOf(otherUserId))
+                        .uid(String.valueOf(otherUserId))
                         .build();
                 map.put(otherUserId, messageListVO);
             } else {
