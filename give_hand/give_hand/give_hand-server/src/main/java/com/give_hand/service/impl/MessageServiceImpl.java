@@ -47,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
                         .time(message.getTime())
                         .count(count)
                         .latestMsg(message.getContent())
-                        .uId(String.valueOf(message.getUid()))
+                        .uid(String.valueOf(message.getUid()))
                         .build();
                 map.put(message.getUid(), messageListVO);
             } else {
