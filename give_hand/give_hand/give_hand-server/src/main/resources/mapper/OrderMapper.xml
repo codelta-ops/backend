@@ -12,23 +12,53 @@
         </if>
     </insert>
     <select id="listMyTask" resultType="com.give_hand.entity.Task">
-        select * from task
+        SELECT
+        t.*,
+        img.image_url AS url
+        FROM
+        task t
+        LEFT JOIN (
+        SELECT
+        task_id,
+        MIN(id) AS first_image_id
+        FROM
+        task_image
+        GROUP BY
+        task_id
+        ) ti ON t.id = ti.task_id
+        LEFT JOIN
+        task_image img ON ti.first_image_id = img.id
         <where>
             <if test="keyword != null and keyword != ''">
-                and title like concat('%',#{keyword},'%')
+                and t.title like concat('%',#{keyword},'%')
             </if>
-            and uid = #{uid}
+            and t.uid = #{uid}
         </where>
-        order by create_time desc
+        order by t.create_time desc
     </select>
     <select id="listOtherTask" resultType="com.give_hand.entity.Task">
-        select * from task
+        SELECT
+        t.*,
+        img.image_url AS url
+        FROM
+        task t
+        LEFT JOIN (
+        SELECT
+        task_id,
+        MIN(id) AS first_image_id
+        FROM
+        task_image
+        GROUP BY
+        task_id
+        ) ti ON t.id = ti.task_id
+        LEFT JOIN
+        task_image img ON ti.first_image_id = img.id
         <where>
             <if test="keyword != null and keyword != ''">
-                and title like concat('%',#{keyword},'%')
+                and t.title like concat('%',#{keyword},'%')
             </if>
-            and uid != #{uid}
+            and t.uid != #{uid}
         </where>
-        order by create_time desc
+        order by t.create_time desc
     </select>
 </mapper>

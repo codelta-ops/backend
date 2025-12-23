@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -71,6 +72,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailDTO getOrder(Long orderId) {
         Task task = taskMapper.getById(orderId);
+        String imageUrl = null;
+        if (task != null) {
+            List<String> imageUrls = taskMapper.getImageUrl(orderId);
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                imageUrl = imageUrls.get(0);
+            }
+        }
         return OrderDetailDTO.builder()
                 .avatar(task.getAvatar())
                 .username(task.getUsername())
@@ -79,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
                 .content(task.getContent())
                 .status(task.getStatus())
                 .uid(task.getUid())
+                .url(imageUrl)
                 .build();
     }
 

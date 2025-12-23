@@ -19,6 +19,7 @@ public class Task {
     private String username;
     private Long price;
     private List<String> imageUrl;
+    private String url;
     private String title;
     private String content;
     private Integer status;
