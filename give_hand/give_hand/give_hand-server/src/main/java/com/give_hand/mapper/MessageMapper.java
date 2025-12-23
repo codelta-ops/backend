@@ -16,14 +16,14 @@ public interface MessageMapper {
      * 获取所有消息
      * @return
      */
-    @Select("select * from message where another_id = #{anotherId}")
-    Page<Message> list(Long anotherId);
+    @Select("select * from message where uid = #{userId} or another_id = #{userId} order by time desc")
+    Page<Message> list(Long userId);
 
     /**
      * 添加消息
      * @param message
      */
-    @Select("insert into message(msg_id, uid, content, time, status, another_id) values(#{msgId}, #{uid}, #{content}, #{time}, #{status}, #{anotherId})")
+    @org.apache.ibatis.annotations.Insert("insert into message(msg_id, uid, content, time, status, another_id) values(#{msgId}, #{uid}, #{content}, #{time}, #{status}, #{anotherId})")
     void insert(Message message);
 
     /**

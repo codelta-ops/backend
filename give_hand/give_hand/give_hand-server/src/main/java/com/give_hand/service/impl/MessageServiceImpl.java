@@ -29,34 +29,38 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageListVO> list() {
-        List<Message> messages = messageMapper.list(BaseContext.getCurrentId());
+        Long currentId = BaseContext.getCurrentId();
+        List<Message> messages = messageMapper.list(currentId);
         MessageListVO messageListVO = null;
         Map<Long,MessageListVO> map = new HashMap<>();
         Integer count = null;
         for(Message message: messages){
-            User user = userMapper.getById(message.getUid());
-            if(Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD)){
+            Long partnerId = Objects.equals(message.getUid(), currentId) ? message.getAnotherId() : message.getUid();
+            User user = userMapper.getById(partnerId);
+            if(Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD) && !Objects.equals(message.getUid(), currentId)){
                 count = 1;
             }else{
                 count = 0;
             }
-            if (!map.containsKey(message.getUid())) {
+            if (!map.containsKey(partnerId)) {
                 messageListVO = MessageListVO.builder()
                         .avatar(user.getAvatar())
                         .username(user.getUsername())
                         .time(message.getTime())
                         .count(count)
                         .latestMsg(message.getContent())
-                        .uid(String.valueOf(message.getUid()))
+                        .uid(String.valueOf(partnerId))
                         .build();
-                map.put(message.getUid(), messageListVO);
+                map.put(partnerId, messageListVO);
             } else {
-                messageListVO = map.get(message.getUid());
+                messageListVO = map.get(partnerId);
                 messageListVO.setCount(messageListVO.getCount() + count);
-                map.put(message.getUid(), messageListVO);
+                map.put(partnerId, messageListVO);
             }
         }
-        return map.values().stream().toList();
+        return map.values().stream()
+                .sorted(Comparator.comparing(MessageListVO::getTime).reversed())
+                .toList();
     }
 
     @Override
