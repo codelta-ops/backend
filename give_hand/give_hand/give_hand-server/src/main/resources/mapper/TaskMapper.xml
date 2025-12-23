@@ -5,7 +5,7 @@
     <select id="list" resultType="com.give_hand.entity.Task">
         SELECT
         t.*,
-        img.image_url
+        img.image_url AS url
         FROM
         task t
         LEFT JOIN (
@@ -26,7 +26,7 @@
     <select id="search" resultType="com.give_hand.entity.Task">
         SELECT
         t.*,
-        img.image_url
+        img.image_url AS url
         FROM
         task t
         LEFT JOIN (
