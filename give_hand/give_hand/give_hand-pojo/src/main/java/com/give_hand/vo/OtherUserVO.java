@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OtherUserVO {
-    private Long userUid;
+    private String userUid;
     private String username;
     private String avatar;
 }

@@ -29,38 +29,34 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageListVO> list() {
-        Long currentId = BaseContext.getCurrentId();
-        List<Message> messages = messageMapper.list(currentId);
+        List<Message> messages = messageMapper.list(BaseContext.getCurrentId());
         MessageListVO messageListVO = null;
         Map<Long,MessageListVO> map = new HashMap<>();
         Integer count = null;
         for(Message message: messages){
-            Long partnerId = Objects.equals(message.getUid(), currentId) ? message.getAnotherId() : message.getUid();
-            User user = userMapper.getById(partnerId);
-            if(Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD) && !Objects.equals(message.getUid(), currentId)){
+            User user = userMapper.getById(message.getUid());
+            if(Objects.equals(message.getStatus(), MessageStatusConstant.UNREAD)){
                 count = 1;
             }else{
                 count = 0;
             }
-            if (!map.containsKey(partnerId)) {
+            if (!map.containsKey(message.getUid())) {
                 messageListVO = MessageListVO.builder()
                         .avatar(user.getAvatar())
                         .username(user.getUsername())
                         .time(message.getTime())
                         .count(count)
                         .latestMsg(message.getContent())
-                        .uid(String.valueOf(partnerId))
+                        .uid(String.valueOf(message.getUid()))
                         .build();
-                map.put(partnerId, messageListVO);
+                map.put(message.getUid(), messageListVO);
             } else {
-                messageListVO = map.get(partnerId);
+                messageListVO = map.get(message.getUid());
                 messageListVO.setCount(messageListVO.getCount() + count);
-                map.put(partnerId, messageListVO);
+                map.put(message.getUid(), messageListVO);
             }
         }
-        return map.values().stream()
-                .sorted(Comparator.comparing(MessageListVO::getTime).reversed())
-                .toList();
+        return map.values().stream().toList();
     }
 
     @Override
@@ -85,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
     public ChatVO queryByUserId(Long userId) {
         User user = userMapper.getById(userId);
         OtherUserVO otherUser = OtherUserVO.builder()
-                .userUid(user.getUid())
+                .userUid(String.valueOf(user.getUid()))
                 .avatar(user.getAvatar())
                 .username(user.getUsername())
                 .build();
