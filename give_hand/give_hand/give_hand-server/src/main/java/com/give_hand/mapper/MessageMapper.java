@@ -1,9 +1,9 @@
 package com.give_hand.mapper;
 
 import com.github.pagehelper.Page;
+import com.give_hand.dto.PageDTO;
 import com.give_hand.entity.Message;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -16,14 +16,14 @@ public interface MessageMapper {
      * 获取所有消息
      * @return
      */
-    @Select("select * from message where uid = #{userId} or another_id = #{userId} order by time desc")
-    Page<Message> list(Long userId);
+    @Select("select * from message where another_id = #{anotherId}")
+    Page<Message> list(Long anotherId);
 
     /**
      * 添加消息
      * @param message
      */
-    @Insert("insert into message(msg_id, uid, content, time, status, another_id) values(#{msgId}, #{uid}, #{content}, #{time}, #{status}, #{anotherId})")
+    @Select("insert into message(msg_id, uid, content, time, status, another_id) values(#{msgId}, #{uid}, #{content}, #{time}, #{status}, #{anotherId})")
     void insert(Message message);
 
     /**
